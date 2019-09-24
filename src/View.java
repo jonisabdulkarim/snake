@@ -2,9 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class View extends JPanel {
-    public boolean pause;
-    public static long score;
-    public static int level;
+    private boolean pause;
+    private static long score;
+    private static int level;
     private static Board board;
 
     private static View view;
@@ -20,7 +20,7 @@ public class View extends JPanel {
         return view;
     }
 
-    public void init() {
+    private void init() {
         //Create frame
         JFrame frame = new JFrame("Snake");
         frame.setSize(700, 625);

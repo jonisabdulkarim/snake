@@ -1,4 +1,6 @@
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CoreMechanics {
 
@@ -12,7 +14,6 @@ public class CoreMechanics {
         initialiseSnakeStart();
         randomisePointGeneration();
 
-        System.out.println(snake.size());
     }
 
     public void initialiseSnakeStart() {
@@ -53,6 +54,19 @@ public class CoreMechanics {
             default:
                 throw new IllegalArgumentException();
         }
+    }
+
+    public void startTimer(){
+        Timer timer =  new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                // TODO: moveSnakeOnBoard()
+                // View.getView().repaint();
+            }
+        };
+
+        timer.schedule(task, 0, 250);
     }
 
     public void sendBoard() {

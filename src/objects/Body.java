@@ -1,3 +1,5 @@
+package objects;
+
 import java.awt.*;
 
 public class Body extends SnakePart {

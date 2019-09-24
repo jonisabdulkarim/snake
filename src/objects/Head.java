@@ -1,3 +1,7 @@
+package objects;
+
+import utilities.Coordinate;
+
 import java.awt.*;
 
 public class Head extends SnakePart {
@@ -9,9 +13,14 @@ public class Head extends SnakePart {
         super(null);
         setPosition(startPosition);
         setColour(Color.RED);
+        setDirection('L');
     }
 
     public char getDirection() {
         return direction;
+    }
+
+    public void setDirection(char direction) {
+        this.direction = direction;
     }
 }

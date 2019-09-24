@@ -1,3 +1,6 @@
+package objects;
+
+import utilities.Coordinate;
 import java.awt.*;
 
 public abstract class GameObject {

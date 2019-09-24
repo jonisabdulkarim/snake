@@ -1,3 +1,7 @@
+import objects.GameObject;
+import objects.SnakePart;
+import utilities.Coordinate;
+
 import java.awt.*;
 
 public class Board {
@@ -8,8 +12,7 @@ public class Board {
 
     // Singleton implementation
     private Board() {
-        initialTileIndex();
-        initialTilePaint();
+        initialiseBoard();
     }
 
     public static Board getInstance(){
@@ -19,25 +22,23 @@ public class Board {
         return board;
     }
 
-    public void initialTileIndex() {
+    public void initialiseBoard() {
         tiles = new Tile[21][21];
         for (int i = 0; i <= 20; i++) {
             for (int j = 0; j <= 20; j++) {
                 tiles[i][j] = new Tile();
-                tiles[i][j].setPosition(i, j);
+                initialTilePaint(new Coordinate(i, j));
             }
         }
     }
 
-    public void initialTilePaint(){
-        for (int i = 0; i <= 20; i++) {
-            for (int j = 0; j <= 20; j++) {
-                if (i == 0 || j ==0 || i == 20 || j == 20) {//make a gray border around the grid
-                    tiles[i][j].setColour(Color.GRAY);
-                } else {
-                    tiles[i][j].setColour(Color.BLACK);
-                }
-            }
+    public void initialTilePaint(Coordinate position){
+        int x = position.getX();
+        int y = position.getY();
+        if (x == 0 || y ==0 || x == 20 || y == 20) {//make a gray border around the grid
+            getTile(x, y).setColour(Color.GRAY);
+        } else {
+            getTile(x, y).setColour(Color.BLACK);
         }
     }
 
@@ -56,7 +57,7 @@ public class Board {
     public void clearBoard() {
         for (int i = 1; i <= 19; i++) {
             for (int j = 1; j <= 19; j++) {
-                tiles[i][j].removeObject();
+                getTile(i, j).removeObject();
             }
         }
     }
@@ -64,7 +65,7 @@ public class Board {
     public void updateBoard() {
         for (int i = 1; i <= 19; i++) {
             for (int j = 1; j <= 19; j++) {
-                tiles[i][j].setColour(tiles[i][j].getObject().getColour());
+                getTile(i, j).setColour(getTile(i, j).getObject().getColour());
             }
         }
     }
@@ -78,5 +79,15 @@ public class Board {
         for (SnakePart part : snake){
             placeObjectOnTile(part);
         }
+    }
+
+    public void removeSnake(Snake snake){
+        for (SnakePart part : snake){
+            removeObject(part.getPosition());
+        }
+    }
+
+    public void removeObject(Coordinate position){
+        getTile(position).removeObject();
     }
 }

@@ -1,3 +1,5 @@
+package objects;
+
 public abstract class SnakePart extends GameObject {
     private SnakePart next;
 

@@ -1,24 +1,35 @@
+import objects.Head;
+import objects.Point;
+import objects.SnakePart;
+import utilities.Coordinate;
+
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class CoreMechanics {
 
-    private static Board board;
     private static final Coordinate START_COORDS = new Coordinate(10, 5);
+    private static final int DELAY = 500;
 
-    public Snake snake;
+    private static Board board;
+    private static Snake snake;
+    private static View view;
+
+    public void createGame(){
+        view = View.getView();
+        initialiseGame();
+        startTimer();
+    }
 
     public void initialiseGame() {
         board = Board.getInstance();
         initialiseSnakeStart();
         randomisePointGeneration();
-
     }
 
     public void initialiseSnakeStart() {
         snake = new Snake(START_COORDS);
-        //board.placeSnake(snake.getSnake());
         board.placeSnake(snake);
     }
 
@@ -37,7 +48,11 @@ public class CoreMechanics {
 
     public void moveSnakeOnBoard(){
         Coordinate vector = directionToCoordinate(snake.getHead());
-        // TODO: finish implementation after completing key listener
+        board.removeSnake(snake);
+        for (SnakePart part : snake) {
+            part.getPosition().add(vector);
+        }
+        board.placeSnake(snake);
     }
 
     public Coordinate directionToCoordinate(Head head){
@@ -61,12 +76,12 @@ public class CoreMechanics {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                // TODO: moveSnakeOnBoard()
-                // View.getView().repaint();
+                moveSnakeOnBoard();
+                view.repaint();
             }
         };
 
-        timer.schedule(task, 0, 250);
+        timer.schedule(task, 0, DELAY);
     }
 
     public void sendBoard() {
@@ -78,10 +93,6 @@ public class CoreMechanics {
     }
     public void pauseGame() {
         // backburner
-    }
-
-    public void drawBoard() {
-        // may be removed
     }
 
 }

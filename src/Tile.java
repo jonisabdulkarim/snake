@@ -1,11 +1,13 @@
+import objects.Body;
+import objects.GameObject;
+import objects.Head;
+import objects.Point;
+
 import java.awt.*;
 
 public class Tile {
 
     private Color colour;
-
-    private Coordinate position;
-
     private GameObject object;
 
     public Tile() {
@@ -47,10 +49,6 @@ public class Tile {
 
     public void removeObject() {
         this.object = null;
-        setColour(Color.GRAY);
-    }
-
-    public void setPosition(int x, int y) {
-        position = new Coordinate(x, y);
+        setColour(Color.BLACK);
     }
 }

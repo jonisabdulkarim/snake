@@ -68,7 +68,7 @@ public class View extends JPanel {
         g.fillRect(0, 0, 28 * 21, 28 * 21);
         for (int i = 0; i <= 20; i++) {
             for (int j = 0; j <= 20; j++) {
-                g.setColor(board.getTile(i, j).getColour());
+                g.setColor(Board.getInstance().getTile(i, j).getColour());
                 g.fillRect(28 * i, 28 * j, 25, 25);
             }
         }

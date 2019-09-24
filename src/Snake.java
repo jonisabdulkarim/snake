@@ -1,11 +1,15 @@
+import objects.Body;
+import objects.Head;
+import objects.SnakePart;
+import utilities.Coordinate;
+
 import java.util.Iterator;
 
-// LinkedList implementation of SnakePart
+// LinkedList implementation of objects.SnakePart
 public class Snake implements SnakeList, Iterable<SnakePart> {
 
     private SnakePart head;
     private SnakePart body;
-    // private int size; todo: replace size() with adder?
 
     public Snake(Coordinate start) {
         head = body = new Head(start);

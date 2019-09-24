@@ -1,10 +1,11 @@
+package utilities;
+
 public class Coordinate {
 
     private int x;
-
     private int y;
 
-    Coordinate(int x, int y) {
+    public Coordinate(int x, int y) {
         setX(x);
         setY(y);
     }
@@ -28,5 +29,9 @@ public class Coordinate {
     public void add(Coordinate other){
         setX(x + other.getX());
         setY(y + other.getY());
+    }
+
+    public String toString(){
+        return "utilities.Coordinate is x = " + x + " and y = " + y;
     }
 }

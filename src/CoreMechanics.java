@@ -2,6 +2,7 @@ import objects.Head;
 import objects.Point;
 import objects.SnakePart;
 import utilities.Coordinate;
+import utilities.Keys;
 
 import java.util.Random;
 import java.util.Timer;
@@ -15,10 +16,15 @@ public class CoreMechanics {
     private static Board board;
     private static Snake snake;
     private static View view;
+    private static Keys keys;
 
     public void createGame(){
         view = View.getView();
         initialiseGame();
+
+        keys = new Keys(snake.getDirection());
+        view.addKeyListener(keys);
+
         startTimer();
     }
 
@@ -49,8 +55,13 @@ public class CoreMechanics {
     public void moveSnakeOnBoard(){
         Coordinate vector = directionToCoordinate(snake.getHead());
         board.removeSnake(snake);
-        for (SnakePart part : snake) {
-            part.getPosition().add(vector);
+        for (SnakePart part : snake){
+            if(part.getNext() == null){ // head of the snake
+                part.getPosition().add(vector);
+            }
+            else {
+                part.setPosition(part.getNext().getPosition());
+            }
         }
         board.placeSnake(snake);
     }
@@ -59,9 +70,9 @@ public class CoreMechanics {
         char direction = head.getDirection();
         switch (direction){
             case 'U':
-                return new Coordinate(0,1);
-            case 'D':
                 return new Coordinate(0,-1);
+            case 'D':
+                return new Coordinate(0,1);
             case 'L':
                 return new Coordinate(-1, 0);
             case 'R':
@@ -76,6 +87,7 @@ public class CoreMechanics {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
+                snake.setDirection(keys.getDirection());
                 moveSnakeOnBoard();
                 view.repaint();
             }
@@ -84,8 +96,13 @@ public class CoreMechanics {
         timer.schedule(task, 0, DELAY);
     }
 
-    public void sendBoard() {
-        // may be removed
+    public boolean collisionDetection() {
+        // TODO: implement
+        return false;
+    }
+
+    public void eatPoint() {
+        // TODO: implement
     }
 
     public void gameOver() {

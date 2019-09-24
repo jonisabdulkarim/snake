@@ -59,6 +59,9 @@ public class View extends JPanel {
 
         frame.add(this);
         board = Board.getInstance();
+
+        setFocusable(true);
+        requestFocus();
     }
 
     @Override

@@ -10,6 +10,10 @@ public class Coordinate {
         setY(y);
     }
 
+    public Coordinate(Coordinate coord) {
+        setPosition(coord);
+    }
+
     public int getX() {
         return x;
     }
@@ -29,6 +33,11 @@ public class Coordinate {
     public void add(Coordinate other){
         setX(x + other.getX());
         setY(y + other.getY());
+    }
+
+    public void setPosition(Coordinate coords){
+        setX(coords.getX());
+        setY(coords.getY());
     }
 
     public String toString(){

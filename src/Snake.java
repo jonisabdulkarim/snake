@@ -26,11 +26,9 @@ public class Snake implements SnakeList, Iterable<SnakePart> {
     @Override
     public int size() {
         int count = 0;
-
         for(SnakePart part : this){
             count++;
         }
-
         return count;
     }
 
@@ -49,9 +47,13 @@ public class Snake implements SnakeList, Iterable<SnakePart> {
     // returns body at specified index
     // starting from back
     @Override
-    public Body getBody(int index) {
-        // TODO: implement
-        return new Body(null);
+    public SnakePart getPart(int index) {
+        for(SnakePart part : this){
+            if(index == 0)
+                return part;
+            index--;
+        }
+        throw new IndexOutOfBoundsException();
     }
 
     // allows Snake to be iterated
@@ -72,5 +74,13 @@ public class Snake implements SnakeList, Iterable<SnakePart> {
                 return temp;
             }
         };
+    }
+
+    public void setDirection(char direction) {
+        getHead().setDirection(direction);
+    }
+
+    public char getDirection(){
+        return getHead().getDirection();
     }
 }

@@ -13,14 +13,20 @@ public abstract class GameObject {
         return position;
     }
 
-    // sets position of this object by cardinals
-    public void setPosition(int x, int y){
-        position = new Coordinate(x, y);
-    }
-
     // sets position by coordinate class object
     public void setPosition(Coordinate coord){
-        position = coord;
+        if(position == null)
+            position = new Coordinate(coord);
+
+        position.setPosition(coord);
+    }
+
+    public void setPosition(int x, int y){
+        if(position == null)
+            position = new Coordinate(x, y);
+
+        position.setX(x);
+        position.setY(y);
     }
 
     // gets colour of this object

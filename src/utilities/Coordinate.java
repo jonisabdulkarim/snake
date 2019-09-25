@@ -30,9 +30,13 @@ public class Coordinate {
         this.y = y;
     }
 
-    public void add(Coordinate other){
+    public void addAndSet(Coordinate other){
         setX(x + other.getX());
         setY(y + other.getY());
+    }
+
+    public Coordinate add(Coordinate other){
+        return new Coordinate(other.getX() + x, other.getY() + y);
     }
 
     public void setPosition(Coordinate coords){

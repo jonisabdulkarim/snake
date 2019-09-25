@@ -15,6 +15,9 @@ public class Snake implements SnakeList, Iterable<SnakePart> {
         head = body = new Head(start);
         addBody();
         addBody();
+        addBody();
+        addBody();
+        addBody();
     }
 
     @Override

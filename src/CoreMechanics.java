@@ -1,6 +1,6 @@
 import objects.Head;
 import objects.Point;
-import objects.SnakePart;
+
 import utilities.Coordinate;
 import utilities.Keys;
 
@@ -17,6 +17,7 @@ public class CoreMechanics {
     private static Snake snake;
     private static View view;
     private static Keys keys;
+    private static Timer timer;
 
     public void createGame(){
         view = View.getView();
@@ -41,6 +42,12 @@ public class CoreMechanics {
 
     public void randomisePointGeneration() {
         Point point = new Point();
+
+        Coordinate pointPosition = randomPosition();
+        while (board.getTile(pointPosition).hasObject() != 'X') {
+            pointPosition = randomPosition();
+        }
+
         point.setPosition(randomPosition());
         board.placeObjectOnTile(point);
     }
@@ -54,16 +61,13 @@ public class CoreMechanics {
 
     public void moveSnakeOnBoard(){
         Coordinate vector = directionToCoordinate(snake.getHead());
-        board.removeSnake(snake);
-        for (SnakePart part : snake){
-            if(part.getNext() == null){ // head of the snake
-                part.getPosition().add(vector);
-            }
-            else {
-                part.setPosition(part.getNext().getPosition());
-            }
+        if(collisionDetection(vector, snake.getHead())) {
+            gameOver();
+        } else {
+            board.removeSnake(snake);
+            board.updateSnake(snake, vector);
+            board.placeSnake(snake);
         }
-        board.placeSnake(snake);
     }
 
     public Coordinate directionToCoordinate(Head head){
@@ -82,8 +86,8 @@ public class CoreMechanics {
         }
     }
 
-    public void startTimer(){
-        Timer timer =  new Timer();
+    public void startTimer() {
+        timer =  new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -96,20 +100,47 @@ public class CoreMechanics {
         timer.schedule(task, 0, DELAY);
     }
 
-    public boolean collisionDetection() {
-        // TODO: implement
-        return false;
+    public void stopTimer() {
+        timer.cancel();
+        timer.purge();
+    }
+
+    public boolean collisionDetection(Coordinate vector, Head head) {
+        Coordinate newPosition = head.getPosition().add(vector);
+        Tile tileOfHead = board.getTile(newPosition);
+
+        switch (tileOfHead.hasObject()) {
+            case 'P':
+                eatPoint();
+            case 'X':
+                return false;
+            case 'B':
+                return true;
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     public void eatPoint() {
-        // TODO: implement
+        snake.addBody();
+        randomisePointGeneration();
+        view.addScore();
     }
 
     public void gameOver() {
-        // backburner
+        stopTimer();
+        view.gameOver();
     }
     public void pauseGame() {
-        // backburner
+        stopTimer();
+    }
+
+    public void resumeGame() {
+
+    }
+
+    public void restartGame() {
+
     }
 
 }

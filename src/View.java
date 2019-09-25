@@ -3,14 +3,15 @@ import java.awt.*;
 
 public class View extends JPanel {
     private boolean pause;
-    private static long score;
-    private static int level;
+    private static int score;
     private static Board board;
+    private static JLabel gameOverMessage;
 
     private static View view;
 
     private View() {
         init();
+        score = 0;
     }
 
     public static View getView() {
@@ -18,6 +19,10 @@ public class View extends JPanel {
             view = new View();
 
         return view;
+    }
+
+    public void addScore(){
+        score++;
     }
 
     private void init() {
@@ -57,11 +62,19 @@ public class View extends JPanel {
         resetBut.setFocusPainted(false);
         resetBut.setForeground(Color.WHITE);
 
+        gameOverMessage = new JLabel("Game Over!");
+        buttonBar.add(gameOverMessage);
+        gameOverMessage.setVisible(false);
+
         frame.add(this);
         board = Board.getInstance();
 
         setFocusable(true);
         requestFocus();
+    }
+
+    public void gameOver(){
+        gameOverMessage.setVisible(true);
     }
 
     @Override
@@ -71,13 +84,12 @@ public class View extends JPanel {
         g.fillRect(0, 0, 28 * 21, 28 * 21);
         for (int i = 0; i <= 20; i++) {
             for (int j = 0; j <= 20; j++) {
-                g.setColor(Board.getInstance().getTile(i, j).getColour());
+                g.setColor(board.getTile(i, j).getColour());
                 g.fillRect(28 * i, 28 * j, 25, 25);
             }
         }
 
         g.setColor(Color.WHITE);
         g.drawString("Score: " + score, 500, 40);// Display the score
-        g.drawString("Level: " + level, 500, 60);// Display the level
     }
 }

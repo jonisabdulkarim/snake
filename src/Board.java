@@ -70,6 +70,17 @@ public class Board {
         }
     }
 
+    public void updateSnake(Snake snake, Coordinate vector) {
+        for (SnakePart part : snake){
+            if(part.getNext() == null){ // head of the snake
+                part.getPosition().addAndSet(vector);
+            }
+            else {
+                part.setPosition(part.getNext().getPosition());
+            }
+        }
+    }
+
     public void placeObjectOnTile(GameObject object){
         Tile tile = getTile(object.getPosition());
         tile.setObject(object);

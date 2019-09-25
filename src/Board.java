@@ -1,8 +1,7 @@
 import objects.GameObject;
 import objects.SnakePart;
+import objects.Wall;
 import utilities.Coordinate;
-
-import java.awt.*;
 
 public class Board {
 
@@ -15,46 +14,44 @@ public class Board {
         initialiseBoard();
     }
 
-    public static Board getInstance(){
+    static Board getInstance(){
         if(board == null)
             board = new Board();
 
         return board;
     }
 
-    public void initialiseBoard() {
+    private void initialiseBoard() {
         tiles = new Tile[21][21];
         for (int i = 0; i <= 20; i++) {
             for (int j = 0; j <= 20; j++) {
                 tiles[i][j] = new Tile();
-                initialTilePaint(new Coordinate(i, j));
+                buildWall(new Coordinate(i, j));
             }
         }
     }
 
-    public void initialTilePaint(Coordinate position){
+    private void buildWall(Coordinate position){
         int x = position.getX();
         int y = position.getY();
         if (x == 0 || y ==0 || x == 20 || y == 20) {//make a gray border around the grid
-            getTile(x, y).setColour(Color.GRAY);
-        } else {
-            getTile(x, y).setColour(Color.BLACK);
+            getTile(x, y).setObject(new Wall());
         }
     }
 
-    public Tile[][] getTiles(){
+    Tile[][] getTiles(){
         return tiles;
     }
 
-    public Tile getTile(int x, int y){
+    Tile getTile(int x, int y){
         return tiles[x][y];
     }
 
-    public Tile getTile(Coordinate position){
+    Tile getTile(Coordinate position){
         return tiles[position.getX()][position.getY()];
     }
 
-    public void clearBoard() {
+    void clearBoard() {
         for (int i = 1; i <= 19; i++) {
             for (int j = 1; j <= 19; j++) {
                 getTile(i, j).removeObject();
@@ -70,7 +67,7 @@ public class Board {
         }
     }
 
-    public void updateSnake(Snake snake, Coordinate vector) {
+    void updateSnake(Snake snake, Coordinate vector) {
         for (SnakePart part : snake){
             if(part.getNext() == null){ // head of the snake
                 part.getPosition().addAndSet(vector);
@@ -81,24 +78,25 @@ public class Board {
         }
     }
 
-    public void placeObjectOnTile(GameObject object){
+    void placeObjectOnTile(GameObject object){
         Tile tile = getTile(object.getPosition());
         tile.setObject(object);
     }
 
-    public void placeSnake(Snake snake){
+    void placeSnake(Snake snake){
         for (SnakePart part : snake){
             placeObjectOnTile(part);
         }
     }
 
-    public void removeSnake(Snake snake){
+    void removeSnake(Snake snake){
         for (SnakePart part : snake){
             removeObject(part.getPosition());
         }
     }
 
-    public void removeObject(Coordinate position){
+    @SuppressWarnings("WeakerAccess")
+    void removeObject(Coordinate position){
         getTile(position).removeObject();
     }
 }

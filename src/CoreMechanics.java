@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CoreMechanics {
+class CoreMechanics {
 
     private static final Coordinate START_COORDS = new Coordinate(10, 5);
     private static final int DELAY = 500;
@@ -19,7 +19,7 @@ public class CoreMechanics {
     private static Keys keys;
     private static Timer timer;
 
-    public void createGame(){
+    void createGame() {
         view = View.getView();
         initialiseGame();
 
@@ -29,18 +29,18 @@ public class CoreMechanics {
         startTimer();
     }
 
-    public void initialiseGame() {
+    private void initialiseGame() {
         board = Board.getInstance();
         initialiseSnakeStart();
         randomisePointGeneration();
     }
 
-    public void initialiseSnakeStart() {
+    private void initialiseSnakeStart() {
         snake = new Snake(START_COORDS);
         board.placeSnake(snake);
     }
 
-    public void randomisePointGeneration() {
+    private void randomisePointGeneration() {
         Point point = new Point();
 
         Coordinate pointPosition = randomPosition();
@@ -52,16 +52,16 @@ public class CoreMechanics {
         board.placeObjectOnTile(point);
     }
 
-    public Coordinate randomPosition(){
+    private Coordinate randomPosition() {
         Random r = new Random();
         int x = 1 + r.nextInt(19);
         int y = 1 + r.nextInt(19);
         return new Coordinate(x, y);
     }
 
-    public void moveSnakeOnBoard(){
+    private void moveSnakeOnBoard() {
         Coordinate vector = directionToCoordinate(snake.getHead());
-        if(collisionDetection(vector, snake.getHead())) {
+        if (collisionDetection(vector, snake.getHead())) {
             gameOver();
         } else {
             board.removeSnake(snake);
@@ -70,13 +70,13 @@ public class CoreMechanics {
         }
     }
 
-    public Coordinate directionToCoordinate(Head head){
+    private Coordinate directionToCoordinate(Head head) {
         char direction = head.getDirection();
-        switch (direction){
+        switch (direction) {
             case 'U':
-                return new Coordinate(0,-1);
+                return new Coordinate(0, -1);
             case 'D':
-                return new Coordinate(0,1);
+                return new Coordinate(0, 1);
             case 'L':
                 return new Coordinate(-1, 0);
             case 'R':
@@ -86,26 +86,39 @@ public class CoreMechanics {
         }
     }
 
-    public void startTimer() {
-        timer =  new Timer();
+    private void correctDirection() {
+        char snakeDirection = snake.getDirection();
+        char keysDirection = keys.getDirection();
+
+        if (!((snakeDirection == 'U' && keysDirection == 'D') ||
+                (snakeDirection == 'R' && keysDirection == 'L') ||
+                (snakeDirection == 'L' && keysDirection == 'R') ||
+                (snakeDirection == 'D' && keysDirection == 'U'))) {
+            snake.setDirection(keysDirection);
+        }
+    }
+
+    private void startTimer() {
+        timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                snake.setDirection(keys.getDirection());
+                checkButtonStatus();
+                correctDirection();
                 moveSnakeOnBoard();
                 view.repaint();
             }
         };
 
-        timer.schedule(task, 0, DELAY);
+        timer.scheduleAtFixedRate(task, DELAY, DELAY);
     }
 
-    public void stopTimer() {
+    private void stopTimer() {
         timer.cancel();
         timer.purge();
     }
 
-    public boolean collisionDetection(Coordinate vector, Head head) {
+    private boolean collisionDetection(Coordinate vector, Head head) {
         Coordinate newPosition = head.getPosition().add(vector);
         Tile tileOfHead = board.getTile(newPosition);
 
@@ -115,32 +128,72 @@ public class CoreMechanics {
             case 'X':
                 return false;
             case 'B':
+            case 'W':
                 return true;
             default:
                 throw new IllegalStateException();
         }
     }
 
-    public void eatPoint() {
+    private void eatPoint() {
         snake.addBody();
         randomisePointGeneration();
         view.addScore();
     }
 
-    public void gameOver() {
+    private void gameOver() {
         stopTimer();
         view.gameOver();
+
+        while (view.getStatus() != 'N') {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored) {
+            }
+        }
+
+        newGame();
     }
-    public void pauseGame() {
+
+    private void pauseGame() {
         stopTimer();
+        while (view.getStatus() != 'R' && view.getStatus() != 'N') {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored) {
+            }
+        }
+        startTimer();
+        if (view.getStatus() == 'N')
+            newGame();
     }
 
-    public void resumeGame() {
+    private void newGame() {
+        stopTimer();
+        board.clearBoard();
+        initialiseSnakeStart();
+        randomisePointGeneration();
 
+        keys = new Keys(snake.getDirection());
+        view.addKeyListener(keys);
+
+        startTimer();
     }
 
-    public void restartGame() {
-
+    private void checkButtonStatus() {
+        char status = view.getStatus();
+        switch (status) {
+            case 'P':
+                pauseGame();
+                break;
+            case 'R':
+                break;
+            case 'N':
+                view.resetView();
+                newGame();
+                break;
+            default:
+                throw new IllegalStateException();
+        }
     }
-
 }

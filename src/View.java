@@ -1,27 +1,38 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class View extends JPanel {
-    private boolean pause;
+public class View extends JPanel implements ActionListener {
     private static int score;
-    private static Board board;
+
+    private volatile static boolean pause;
+    private volatile static boolean newGame;
+
     private static JLabel gameOverMessage;
 
+    private static JButton pauseBut;
+    private static JButton resumeBut;
+    private static JButton newBut;
+
     private static View view;
+    private static Board board;
 
     private View() {
         init();
         score = 0;
+        pause = false;
+        newGame = false;
     }
 
-    public static View getView() {
+    static View getView() {
         if (view == null)
             view = new View();
 
         return view;
     }
 
-    public void addScore(){
+    void addScore(){
         score++;
     }
 
@@ -42,25 +53,31 @@ public class View extends JPanel {
         buttonBar.add(s);
 
         //Buttons
-        JButton pauseBut = new JButton("PAUSE");
+        pauseBut = new JButton("PAUSE");
         buttonBar.add(pauseBut);
         pauseBut.setBackground(new Color(59, 89, 182));
         pauseBut.setBounds(50, 50, 250, 100);
         pauseBut.setFocusPainted(false);
         pauseBut.setForeground(Color.WHITE);
+        pauseBut.setActionCommand("pause");
+        pauseBut.addActionListener(this);
 
-        JButton resumeBut = new JButton("RESUME");
+        resumeBut = new JButton("RESUME");
         buttonBar.add(resumeBut);
         resumeBut.setBackground(new Color(59, 89, 182));
         resumeBut.setFocusPainted(false);
         resumeBut.setForeground(Color.WHITE);
         resumeBut.setVisible(false);//make resume invisible
+        resumeBut.setActionCommand("resume");
+        resumeBut.addActionListener(this);
 
-        JButton resetBut = new JButton("NEW GAME");
-        buttonBar.add(resetBut);
-        resetBut.setBackground(new Color(59, 89, 182));
-        resetBut.setFocusPainted(false);
-        resetBut.setForeground(Color.WHITE);
+        newBut = new JButton("NEW GAME");
+        buttonBar.add(newBut);
+        newBut.setBackground(new Color(59, 89, 182));
+        newBut.setFocusPainted(false);
+        newBut.setForeground(Color.WHITE);
+        newBut.setActionCommand("newGame");
+        newBut.addActionListener(this);
 
         gameOverMessage = new JLabel("Game Over!");
         buttonBar.add(gameOverMessage);
@@ -73,8 +90,51 @@ public class View extends JPanel {
         requestFocus();
     }
 
-    public void gameOver(){
+    void gameOver(){
         gameOverMessage.setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if("pause".equals(e.getActionCommand())) {
+            pause = true;
+            pauseBut.setVisible(false);
+            resumeBut.setVisible(true);
+        }
+        else if("resume".equals(e.getActionCommand())) {
+            pause = false;
+            pauseBut.setVisible(true);
+            resumeBut.setVisible(false);
+        }
+        else if("newGame".equals(e.getActionCommand())) {
+            newGame = true;
+        }
+    }
+
+    void resetView(){
+        gameOverMessage.setVisible(false);
+        pauseBut.setVisible(true);
+        resumeBut.setVisible(false);
+        newBut.setVisible(true);
+        newGame = false;
+        pause = false;
+        score = 0;
+        requestFocus();
+    }
+
+    char getStatus() {
+        if (newGame) {
+            return 'N';
+        }
+        else if (pause) {
+            return 'P';
+        }
+        else if (!pause) {
+            return 'R';
+        }
+        else{
+            throw new IllegalStateException();
+        }
     }
 
     @Override

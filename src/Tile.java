@@ -1,28 +1,26 @@
-import objects.Body;
-import objects.GameObject;
-import objects.Head;
+import objects.*;
 import objects.Point;
 
 import java.awt.*;
 
-public class Tile {
+class Tile {
 
     private Color colour;
     private GameObject object;
 
-    public Tile() {
+    Tile() {
         setColour(Color.BLACK);
     }
 
-    public Color getColour() {
+    Color getColour() {
         return colour;
     }
 
-    public void setColour(Color colour) {
+    void setColour(Color colour) {
         this.colour = colour;
     }
 
-    public char hasObject() {
+    char hasObject() {
         if (object == null) return 'X';
         else if (object.getClass() == Head.class) {
             return 'H';
@@ -30,16 +28,18 @@ public class Tile {
             return 'B';
         } else if (object.getClass() == Point.class) {
             return 'P';
+        } else if(object.getClass() == Wall.class) {
+            return 'W';
         } else {
             throw new IllegalArgumentException();
         }
     }
 
-    public GameObject getObject() {
+    GameObject getObject() {
         return object;
     }
 
-    public void setObject(GameObject object) {
+    void setObject(GameObject object) {
         if(object == null)
             throw new NullPointerException();
 
@@ -47,7 +47,7 @@ public class Tile {
         setColour(object.getColour());
     }
 
-    public void removeObject() {
+    void removeObject() {
         this.object = null;
         setColour(Color.BLACK);
     }

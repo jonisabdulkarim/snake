@@ -48,7 +48,7 @@ class CoreMechanics {
             pointPosition = randomPosition();
         }
 
-        point.setPosition(randomPosition());
+        point.setPosition(pointPosition);
         board.placeObjectOnTile(point);
     }
 
@@ -110,7 +110,7 @@ class CoreMechanics {
             }
         };
 
-        timer.scheduleAtFixedRate(task, DELAY, DELAY);
+        timer.scheduleAtFixedRate(task, DELAY, DELAY); // TODO: sort out lag issue
     }
 
     private void stopTimer() {
